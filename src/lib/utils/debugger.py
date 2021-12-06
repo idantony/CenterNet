@@ -2,9 +2,12 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import datetime
+
 import numpy as np
 import cv2
 from .ddd_utils import compute_box_3d, project_to_image, draw_box_3d
+
 
 class Debugger(object):
   def __init__(self, ipynb=False, theme='black', 
@@ -43,6 +46,8 @@ class Debugger(object):
         (255, 0, 0), (0, 0, 255)]
     elif num_classes == 80 or dataset == 'coco':
       self.names = coco_class_name
+    elif num_classes == 10 or dataset == 'my_Dataset':
+      self.names = my_Dataset_class_name
     elif num_classes == 20 or dataset == 'pascal':
       self.names = pascal_class_name
     elif dataset == 'gta':
@@ -79,7 +84,8 @@ class Debugger(object):
       bg * (1 - trans)).astype(np.uint8)
   
   def show_img(self, pause = False, imgId = 'default'):
-    cv2.imshow('{}'.format(imgId), self.imgs[imgId])
+    scale_image = cv2.resize(self.imgs[imgId], (0, 0), fx=0.5, fy=0.5, interpolation=cv2.INTER_NEAREST)
+    cv2.imshow('{}'.format(imgId), scale_image)
     if pause:
       cv2.waitKey()
   
@@ -215,7 +221,9 @@ class Debugger(object):
   def show_all_imgs(self, pause=False, time=0):
     if not self.ipynb:
       for i, v in self.imgs.items():
-        cv2.imshow('{}'.format(i), v)
+        print(datetime.datetime.now())
+        scale_image = cv2.resize(v, (0, 0), fx=0.5, fy=0.5, interpolation=cv2.INTER_NEAREST)
+        cv2.imshow('{}'.format(i), scale_image)
       if cv2.waitKey(0 if pause else 1) == 27:
         import sys
         sys.exit(0)
@@ -435,7 +443,8 @@ kitti_class_name = [
 gta_class_name = [
   'p', 'v'
 ]
-
+my_Dataset_class_name = ['pedestrian', 'people', 'bicycle', 'car',
+                         'van', 'truck', 'tricycle', 'awning-tricycle', 'bus', 'motor']
 pascal_class_name = ["aeroplane", "bicycle", "bird", "boat", "bottle", "bus", 
   "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", 
   "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]

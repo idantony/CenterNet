@@ -24,9 +24,11 @@ def demo(opt):
     opt.demo[opt.demo.rfind('.') + 1:].lower() in video_ext:
     cam = cv2.VideoCapture(0 if opt.demo == 'webcam' else opt.demo)
     detector.pause = False
+    half = True
+    ret = None
     while True:
         _, img = cam.read()
-        cv2.imshow('input', img)
+        # cv2.imshow('input', img)
         ret = detector.run(img)
         time_str = ''
         for stat in time_stats:
